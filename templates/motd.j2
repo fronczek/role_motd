@@ -1,6 +1,6 @@
 
 Product:    {{ ansible_product_name }}  [SN: {{ansible_product_serial}}]
-Processor:  {{ ansible_processor_count }} x {{ ansible_processor[2] }} ({{ansible_processor_cores}} cores) / (vCPUs: {{ansible_processor_vcpus}})
+Processor:  {{ ansible_processor_count }} x {{ ansible_processor[2]|default("UNKNOWN") }} ({{ansible_processor_cores}} cores) / (vCPUs: {{ansible_processor_vcpus}})
 Memory:     {{ (ansible_memtotal_mb*1024*1024)|filesizeformat }}
 Virtual:    {{ ansible_virtualization_role }}
 
