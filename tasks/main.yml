@@ -1,6 +1,28 @@
 ---
 
+- name: "Check if Puppet managed node"
+  ansible.builtin.command:
+    cmd: grep Puppet /etc/motd
+  check_mode: false
+  register: motd_puppet_managed
+  changed_when: motd_puppet_managed.rc == 0
+  failed_when: motd_puppet_managed.rc == 2
+  
+- ansible.builtin.debug:
+    var: motd_puppet_managed
+  when: role_motd_debug
+
+- name: Check if system have puppet facter installed
+  ansible.builtin.stat:
+    path: /opt/puppetlabs/bin/facter
+  register: facter_installed
+
+- ansible.builtin.debug:
+    var: facter_installed
+  when: role_motd_debug
+
 - name: Template motd file
   template:
     src: templates/motd.j2
     dest: /etc/motd
+  when: not facter_installed.stat.exists|bool and not motd_puppet_managed.changed|bool
